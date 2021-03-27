@@ -2,31 +2,37 @@ import os
 
 from glob import glob
 
-def get_dir_list(path):
-    dirlist = [path]
-    for d in dirlist:
+def mkdir(path: str) -> None: 
+    """[summary]
+
+    Args:
+        path (str): [description]
+    """
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+def get_dirs(path: str) -> list:
+    """[summary]
+
+    Args:
+        path (str): [description]
+
+    Returns:
+        list: [description]
+    """
+    dirs = [path]
+    for d in dirs:
         for filename in os.listdir(d):
             filepath = os.path.join(d, filename)
             if os.path.isdir(filepath):
-                dirlist.append(filepath)
-    return dirlist
+                dirs.append(filepath)
+    return dirs
 
-def get_pdf_list(dirlist):
-    filelist = []
-    for d in dirlist:
-        for filename in glob(os.path.join(d, "*.pdf")):
-            filelist.append(filename)
+def get_files(path: str, extention: str="*") -> list: 
     
-    return filelist
+    files = []
+    for filename in glob(os.path.join(path, extention)):
+        files.append(filename)
+    return files
 
-
-src_path = "/data/Book/"
-dirlist = get_dir_list(path)
-pdflist = get_pdf_list(dirlist)
-
-dst_path = "pdf_image"
-temp = pdflist[40].split("/")
-temp[0] = dst_path
-temp = os.path.join(*temp)
-print(temp)
 
