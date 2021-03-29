@@ -12,14 +12,6 @@ def mkdir(path: str) -> None:
         os.mkdir(path)
 
 def get_dirs(path: str) -> list:
-    """[summary]
-
-    Args:
-        path (str): [description]
-
-    Returns:
-        list: [description]
-    """
     dirs = [path]
     for d in dirs:
         for filename in os.listdir(d):
@@ -28,8 +20,7 @@ def get_dirs(path: str) -> list:
                 dirs.append(filepath)
     return dirs
 
-def get_files(path: str, extention: str="*") -> list: 
-    
+def get_files(path: str, extention: str="*") -> list:     
     files = []
     for filename in glob(os.path.join(path, extention)):
         files.append(filename)

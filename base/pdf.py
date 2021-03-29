@@ -1,18 +1,13 @@
 import os
 import PyPDF2
-
-from PIL import Image
-from fpdf import FPDF
-
-
+import img2pdf
 
 def page_to_image(page: "PageObject", trg_path: str) -> None:
     try:
         xObject = page['/Resources']['/XObject'].getObject()
 
         for obj in xObject:
-
-            if xObject[obj]['/Subtype'] == '/Image':                
+            if xObject[obj]['/Subtype'] == '/Image':            
                 size = (xObject[obj]['/Width'], xObject[obj]['/Height'])
                 #data = xObject[obj].getObject()
                 data = xObject[obj]._data
@@ -25,6 +20,7 @@ def page_to_image(page: "PageObject", trg_path: str) -> None:
                 img = open(f"{trg_path}.png", "wb")
                 img.write(data)
                 img.close()
+
                 """
                 if xObject[obj]['/Filter'] == '/FlateDecode':
                     img = Image.frombytes(mode, size, data)
@@ -56,11 +52,7 @@ def pdf_to_images(src_path: str, trg_dir: str) -> None:
         page_to_image(page, trg_path)
 
 def images_to_pdf(images: list, trg_path: str) -> None:
-    pdf = FPDF()
-
-    for image in images:
-        pdf.add_page()
-        pdf.image(image, x=0, y=0, w=pdf.w, h=pdf.h)
-    pdf.output(trg_path, "F")
+    with open(trg_path, "wb") as f:
+        f.write(img2pdf.convert([image for image in images]))
 
 
