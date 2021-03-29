@@ -51,9 +51,9 @@ def imwrite(trg_path, img):
     with open(trg_path, mode='w+b') as f:
         encoded_img.tofile(f)
 
-def convert_page(src_path):
+def convert_page(src_path, mode):
     ff = np.fromfile(src_path, np.uint8)
-    img = cv2.imdecode(ff, cv2.IMREAD_GRAYSCALE)
+    img = cv2.imdecode(ff, mode)
     img = remove_background(img)
     return resize(img)
 
@@ -68,7 +68,7 @@ def get_all_paths(src_path, trg_path, extension):
 
 if __name__ == "__main__":
     mode = ["0_original", "1_pdf_to_images", "2_convert_gray", "3_convert_color", "4_images_to_pdf"]
-    select = 0
+    select = 1
 
     if mode[select] == "1_pdf_to_images":
         src_path = mode[0]
@@ -82,30 +82,30 @@ if __name__ == "__main__":
             pdf_to_images(pdf, trg_dir)
     
 
-    if mode == "2_convert_gray":
+    if mode[select] == "2_convert_gray":
         src_path = mode[1]
         trg_path = mode[2]
         images = get_all_paths(src_path, trg_path, "*.png")
         
         for image in images:
             trg = image.replace(src_path, trg_path)
-            img = convert_page(image)
+            img = convert_page(image, cv2.IMREAD_GRAYSCALE)
             img = histogram_compress(img)
             imwrite(trg, img)
 
     
-    if mode == "3_convert_color":
+    if mode[select] == "3_convert_color":
         src_path = mode[1]
         trg_path = mode[3]
         images = get_all_paths(src_path, trg_path, "*.png")
         
         for image in images:
             trg = image.replace(src_path, trg_path)
-            img = convert_page(image, trg)
+            img = convert_page(image, cv2.IMREAD_COLOR)
             imwrite(trg, img)
         
     
-    if mode == "4_images_to_pdf":
+    if mode[select] == "4_images_to_pdf":
         src_path = mode[2]
         trg_path = mode[4]
         dirs = get_dirs(src_path)
